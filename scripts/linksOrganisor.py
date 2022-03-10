@@ -28,15 +28,6 @@ class FB_WhatsappLinksBot(object):
                     self.line_count += 1
             file.close()
         print(f'working with over {self.line_count} Links')
-        # if self.line_count > 1000:
-        #     self.urlCountperDoc = 500
-        # else:
-        #     if self.line_count >= 10000:
-        #         self.urlCountperDoc = 1000
-        #     else:
-        #         if self.line_count <= 100:
-        #             self.urlCountperDoc = self.line_count
-        # print(f'line count per doc will be {self.line_count}')
         self.docNumber = 0
         self.cleanlinks()
 
@@ -45,71 +36,49 @@ class FB_WhatsappLinksBot(object):
             with open(self.get_path('resources\\docs\\mydocs.txt'), 'a') as f:
                 f.write('No Links collected')
             print('Done manupilating links in', "--- %s seconds ---" % (time.time() - self.start_time))
-            os._exit(0)
-            # sys.exit(0)
+            raise SystemExit(0)
 
         self.docLists = []
         self.docNumber += 1
         doc = f'linkDoc{self.docNumber}.txt'
         try:
             with open(self.get_path('resources\\docs\\mydocs.txt'), 'a') as f:
-                f.write(f"{doc} \n")
+                f.write(f"{doc} \n") # writes down the list of document
         finally:
             print(f'Done appending {doc} to resources\\docs\\mydocs.txt')
         self.docLists.append(doc)
         docscount = len(self.docLists)
         # print(f'we now have {docscount} documents')
         count = 0
-
         with open(self.get_path('resources\\whatsAppUrls.txt'), 'r') as file:
-            for line in file:
-                if line == "\n":
-                    print('\npassing blank line')
-                    pass
-                else:
-                    count  += 1
-                    if count <= 10:
-                        with  open(self.get_path(f'resources\\docs\\WorkingDocs\\{doc}'), 'a') as d:
-                            d.write(f"{line}\n")
-                            self.deleteusedLink()
-                            
+            with  open(self.get_path(f'resources\\docs\\WorkingDocs\\{doc}'), 'a') as d:
+                for line in file:
+                    if line == "\n":
+                        print('\npassing blank line')
+                        pass
                     else:
-                        self.cleanlinks()
+                        print(f'\nAdding link: {line}')
+                        count  += 1
+                        if count <= 5:
+                            d.write(f"{line}\n")
+                            lineToDelete = line
+                            self.deleteusedLink(lineToDelete)
+                        else:
+                            print('count is more than 5 going back to start new file')
+                            self.cleanlinks()
    
-        # with open(self.get_path('resources\\whatsAppUrls.txt'), 'r') as file:
-        #     for line in file:
-        #         if line != "\n":
-        #             count  += 1
-        #             if count <= 10:
-        #                 with  open(self.get_path(f'resources\\docs\\WorkingDocs\\{doc}'), 'a') as d:
-        #                     d.write(f"{line}\n")
-        #                     self.deleteusedLink()
-                            
-        #             else:
-        #                 self.cleanlinks()
 
-
-    def deleteusedLink(self):
+    def deleteusedLink(self, lineToDelete):
         try:
-            with open(self.get_path('resources\\whatsAppUrls.txt'), 'r') as fin:
-                linkdata = fin.read().splitlines(True)
-            with open(self.get_path('resources\\whatsAppUrls.txt'), 'w') as fout:
-                
-                fout.writelines(linkdata[1:])
-                try:
-                    link = linkdata[0]
-                    if link == "":
-                        print('\navoiding unnecessary spaces')
-                        self.deleteusedLink()
-                    if link == '\n':
-                        print('avoiding unnecessary lines')
-                        self.deleteusedLink()
-                    return link
-                    print(f'done deleting link {link}')
-                except IndexError:
-                    mess = "Hooray..... You are done You can exit the app now"
-                    print(mess)
-            
+            file = self.get_path('resources\\whatsAppUrls.txt')
+            with open(file, 'r+') as f: # open file in read / write mode
+                firstLine = f.readline() # read the first line and throw it out
+                data = f.read() # read the rest
+                f.seek(0) # set the cursor to the top of the file
+                f.write(data) # write the data back
+                f.truncate() # set the file size to the current size
+                return firstLine
+           
         finally:
             pass
     

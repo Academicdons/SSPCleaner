@@ -65,7 +65,6 @@ class FB_WhatsappLinksBot(object):
         if self.empty == 0:
             print('\nFound former Group Links to be empty.. Opening an new one')
             self.empty = 1
-            print('\nopening resources\\docs\\mydocs.txt Now')
             try:
                 with open(self.get_path('resources\\docs\\mydocs.txt'), 'r') as fin:
                     groupdata = fin.read().splitlines(True)
@@ -75,10 +74,10 @@ class FB_WhatsappLinksBot(object):
                     try:
                         group = groupdata[0]
                         if group == "":
-                            print('\navoiding unnecessary spaces in the get_first_group function')
+                            print('\navoiding unnecessary spaces')
                             self.get_first_group()
                         if group == '\n':
-                            print('\navoiding unnecessary lines in the get_first_group function')
+                            print('\navoiding unnecessary lines')
                             self.get_first_group()
                         if group == 'No Links collected':
                             print('\nNo Links collected. \nAdd links to the whatsappUrls.txt to continue')
@@ -96,13 +95,14 @@ class FB_WhatsappLinksBot(object):
             self.get_first_link_Sec_Time()
 
     def KillBot(self):
+        winsound.MessageBeep()
         mess = "Hooray..... You are done You can exit the app now"
         print(mess)
-        os._exit(0)
+        # os._exit(0)
+        raise SystemExit(0)
         # sys.exit(0)
                 
     def get_first_link_Sec_Time(self):
-        print('in the get_first_link_Sec_Time')
         print(f'working on {self.documentToUse}')
         try:
             with open(self.documentToUse, 'r') as fin:
@@ -114,32 +114,32 @@ class FB_WhatsappLinksBot(object):
                     self.link = linkdata[0]
                     print(f'Found this link: {self.link}')
                     if self.link == "":
-                        print('\navoiding unnecessary spaces in the get_first_link function')
+                        print('\navoiding unnecessary spaces')
                         self.get_first_link()
                     if self.link == '\n':
-                        print('\navoiding unnecessary lines in the get_first_link function')
+                        print('\navoiding unnecessary lines')
                         self.get_first_link()
                     
                     return self.link
 
                 except IndexError:
                     print('Index error thrown')
-                    print(f'\nthe list in doc {self.doctoUse} is empty.\nDeleting the file and opening a new one')
-                    self.empty = 0 
-                    fileToDelete = self.get_path(f"resources\\docs\\WorkingDocs\\{self.doctoUse}")
-                    if os.path.exists(fileToDelete):
-                        os.remove(fileToDelete)
-                    else:
-                        print(f"\nThe file {self.doctoUse} does not exist")
-                    self.get_first_group()
-                    # mess = "Hooray..... You are done You can exit the app now"
+                    self.finishAndDelete()
+                 
                 finally:
                     return self.link
             
         finally:
             return self.link
 
-            
+    def finishAndDelete(self):
+        self.empty = 0 
+        fileToDelete = self.get_path(f"resources\\docs\\WorkingDocs\\{self.doctoUse}")
+        # if os.path.exists(fileToDelete):
+        os.remove(fileToDelete)
+        # else:
+        #     print(f"\nThe file {self.doctoUse} does not exist")
+        self.get_first_group()
 
 
     def get_first_link(self):
@@ -158,12 +158,12 @@ class FB_WhatsappLinksBot(object):
                 fout.writelines(linkdata[1:])
                 try:
                     self.link = linkdata[0]
-                    print(f'Found this link: {self.link}')
+                    print(f'Found this link:')
                     if self.link == "":
-                        print('\navoiding unnecessary spaces in the get_first_link function')
+                        print('\navoiding unnecessary spaces ')
                         self.get_first_link()
                     if self.link == '\n':
-                        print('\navoiding unnecessary lines in the get_first_link function')
+                        print('\navoiding unnecessary lines')
                         self.get_first_link()
                     
                     return self.link
@@ -205,7 +205,6 @@ class FB_WhatsappLinksBot(object):
         sys.stdout.write("\nAttempting To check Url...")
         # self.link = self.get_first_group()
         self.get_first_group()
-        print(self.link)
         if self.link == '':
             print('\nAvoiding blank link so this should work')
             self.get_first_group()
@@ -227,7 +226,9 @@ class FB_WhatsappLinksBot(object):
             elem.click()
             link = driver.current_url
             time.sleep(0.5)
-        except InvalidArgumentException:
+        except InvalidArgumentException: 
+            self.get_first_group()
+        except TimeoutException: 
             self.get_first_group()
         finally:
             self.checkLinkValidity(driver) 
@@ -267,39 +268,6 @@ class FB_WhatsappLinksBot(object):
     
             self.checkUrl(driver)
 
-    # def openSecDoc(self,line):
-    #     global AllLinksFound
-    #     linkFound = False
-    #     with open(self.get_path("resources\\DataBase\\AllWhatsAppURLSDB.txt")) as f:
-    #         for data in f:
-    #             if line in data:
-    #                 linkFound = True
-                
-    #         if linkFound == False:
-    #             self.dataAppend(line)
-                
-        
-
-    # def dataAppend(self, line):
-    #     with open(self.get_path("resources\\DataBase\\AllWhatsAppURLSDB.txt"), "a") as f:
-    #         f.write(f"{line} \n")
-    #         f.close()
-    #     with open(self.get_path("resources\\DataBase\\new.txt"), "a") as G:
-    #         sys.stdout.write('\nLink Not found in db...\nadding link Now..')
-    #         G.write(f"{line} \n")
-
-
-    # def openFirstDoc(self):
-    #     global AllLinksFound
-    #     sys.stdout.write("\nCounterchecking Link with DB")
-    #     empty_list = ""
-
-    #     with open(self.get_path('resources\\whatsAppUrls.txt')) as fp:
-    #         for line in fp:
-    #             time.sleep(0.5)
-    #             self.openSecDoc(line)
-
-        
 
 
 

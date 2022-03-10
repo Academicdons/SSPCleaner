@@ -1,13 +1,12 @@
 # -*- mode: python ; coding: utf-8 -*-
 added_files = [
-("scripts/whatbot.py","scripts"),
-("resources/DataBase/AllWhatsAppURLSDB.txt","resources/DataBase"),
-("resources/DataBase/new.txt","resources/DataBase"),
-("resources/whatsAppUrls.txt","resources"),
-("resources/workinglinks.txt","resources"),
-("UIFiles/runbot.ui","UIFiles"),
-("UIFiles/WelcomePage.ui","UIFiles"),
-("resources/chromedriver.exe", "resources")
+    ("scripts/whatbot.py","scripts"),
+    ("scripts/linksOrganisor.py","scripts"),
+    ("resources/whatsAppUrls.txt","resources"),
+    ("resources/workinglinks.txt","resources"),
+    ("UIFiles/runbot.ui","UIFiles"),
+    ("UIFiles/WelcomePage.ui","UIFiles"),
+    ("resources/chromedriver.exe", "resources")
 ]
 
 block_cipher = None
@@ -35,7 +34,7 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,  
           [],
-          name='Gee Bot',
+          name='GeeBot',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
